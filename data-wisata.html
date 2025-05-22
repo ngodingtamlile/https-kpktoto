@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Data Wisata</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: url('img/kupang.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+    }
+
+    .overlay {
+      background: rgba(0, 0, 0, 0.5); /* gelap transparan untuk keterbacaan */
+      min-height: 100%;
+      padding-bottom: 50px;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 100px 20px 40px;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: bold;
+      text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+    }
+
+    .wisata-container {
+      padding: 40px;
+    }
+
+    .card {
+      background-color: rgba(255, 255, 255, 0.9);
+      color: #333;
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.03);
+    }
+
+    .card-img-top {
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      max-height: 200px;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">Wisata Kupang</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link" href="index.html">Beranda</a></li>
+            <li class="nav-item"><a class="nav-link active" href="data-wisata.html">Data Wisata</a></li>
+            <li class="nav-item"><a class="nav-link" href="peta.html">Peta</a></li>
+            <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <h1>Jelajahi Tempat Wisata Terbaik di Kupang</h1>
+    </div>
+  </section>
+
+  <!-- Wisata Section -->
+  <div class="container my-5">
+    <h2 class="text-center mb-4">Daftar Tempat Wisata</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+      
+      <!-- Pantai Lasiana -->
+      <div class="col">
+        <div class="card h-100">
+          <img src="img/lasiana.jpg" class="card-img-top" alt="Pantai Lasiana">
+          <div class="card-body">
+            <h5 class="card-title">Pantai Lasiana</h5>
+            <p class="card-text">Pantai ikonik dengan pasir putih dan deretan pohon lontar yang memikat.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gua Monyet -->
+      <div class="col">
+        <div class="card h-100">
+          <img src="img/monyet.jpg" class="card-img-top" alt="Gua Monyet">
+          <div class="card-body">
+            <h5 class="card-title">Gua Monyet</h5>
+            <p class="card-text">Gua alami dengan suasana mistis dan habitat monyet liar.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Batu Nona Beach -->
+      <div class="col">
+        <div class="card h-100">
+          <img src="img/batunona.jpg" class="card-img-top" alt="Batu Nona Beach">
+          <div class="card-body">
+            <h5 class="card-title">Batu Nona Beach</h5>
+            <p class="card-text">Pantai cantik dengan kisah legenda yang menambah daya tariknya.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pantai Manikin -->
+      <div class="col">
+        <div class="card h-100">
+          <img src="img/manikin.jpg" class="card-img-top" alt="Pantai Manikin">
+          <div class="card-body">
+            <h5 class="card-title">Pantai Manikin</h5>
+            <p class="card-text">Pantai bersih dan luas, cocok untuk piknik dan bermain air bersama keluarga.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pantai Tablolong -->
+      <div class="col">
+        <div class="card h-100">
+          <img src="img/tablolo.webp" class="card-img-top" alt="Pantai Tablolong">
+          <div class="card-body">
+            <h5 class="card-title">Pantai Tablolong</h5>
+            <p class="card-text">Surganya pemancing dan penyelam dengan air laut yang tenang.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Air Terjun Oenesu -->
+      <div class="col">
+        <div class="card h-100">
+          <img src="img/air-terjun.jpg" class="card-img-top" alt="Air Terjun Oenesu">
+          <div class="card-body">
+            <h5 class="card-title">Air Terjun Oenesu</h5>
+            <p class="card-text">Air terjun bertingkat di tengah hutan tropis yang menyegarkan.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gua Kristal -->
+      <div class="col">
+        <div class="card h-100">
+          <img src="img/kristal.jpg" class="card-img-top" alt="Gua Kristal">
+          <div class="card-body">
+            <h5 class="card-title">Gua Kristal</h5>
+            <p class="card-text">Gua dengan kolam air jernih yang menakjubkan dan cocok untuk berenang.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subasuka WaterPark -->
+      <div class="col">
+        <div class="card h-100">
+          <img src="img/subasuka.webp" class="card-img-top" alt="Subasuka WaterPark">
+          <div class="card-body">
+            <h5 class="card-title">Subasuka WaterPark</h5>
+            <p class="card-text">Taman air seru dengan berbagai wahana untuk anak-anak dan keluarga.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bukit Cinta -->
+      <div class="col">
+        <div class="card h-100">
+          <img src="img/bcinta.jpg" class="card-img-top" alt="Bukit Cinta">
+          <div class="card-body">
+            <h5 class="card-title">Bukit Cinta</h5>
+            <p class="card-text">Spot romantis dengan pemandangan alam yang memukau di sore hari.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gunung Fatule'u -->
+      <div class="col">
+        <div class="card h-100">
+          <img src="img/fatuleu.jpg" class="card-img-top" alt="Gunung Fatule'u">
+          <div class="card-body">
+            <h5 class="card-title">Gunung Fatule'u</h5>
+            <p class="card-text">Gunung batu unik yang menjadi tempat favorit pendaki dan fotografer.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Taman Nostalgia -->
+      <div class="col">
+        <div class="card h-100">
+          <img src="img/tamnos.jpg" class="card-img-top" alt="Taman Nostalgia">
+          <div class="card-body">
+            <h5 class="card-title">Taman Nostalgia</h5>
+            <p class="card-text">Taman kota penuh kenangan, cocok untuk bersantai sore.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kuah Asam Ikan Tenau -->
+      <div class="col">
+        <div class="card h-100">
+          <img src="img/artis.jpg" class="card-img-top" alt="Kuah Asam Ikan Tenau">
+          <div class="card-body">
+            <h5 class="card-title">Kuah Asam Ikan Tenau</h5>
+            <p class="card-text">Wisata kuliner khas laut yang menggugah selera di pinggir pelabuhan.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kafe Tebing -->
+      <div class="col">
+        <div class="card h-100">
+          <img src="img/tebing.jpg" class="card-img-top" alt="Kafe Tebing">
+          <div class="card-body">
+            <h5 class="card-title">Kafe Tebing</h5>
+            <p class="card-text">Kafe eksotis di tepi tebing dengan panorama laut yang memesona.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bendungan Tilong -->
+      <div class="col">
+        <div class="card h-100">
+          <img src="img/tilong.jpg" class="card-img-top" alt="Bendungan Tilong">
+          <div class="card-body">
+            <h5 class="card-title">Bendungan Tilong</h5>
+            <p class="card-text">Tempat tenang untuk memancing dan menikmati pemandangan alam.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bendungan Raknamo -->
+      <div class="col">
+        <div class="card h-100">
+          <img src="img/raknamo.jpg" class="card-img-top" alt="Bendungan Raknamo">
+          <div class="card-body">
+            <h5 class="card-title">Bendungan Raknamo</h5>
+            <p class="card-text">Bendungan megah dikelilingi perbukitan hijau yang menyejukkan.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

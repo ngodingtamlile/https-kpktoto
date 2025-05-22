@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <title>Peta Wisata Kota Kupang</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="css/leaflet.css" />
+    <link rel="stylesheet" href="css/leaflet-search.min.css" />
+
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        height: calc(100vh - 200px);
+      }
+      .autocomplete-list {
+        position: absolute;
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 1050;
+        width: 100%;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      }
+      .autocomplete-item {
+        padding: 8px 12px;
+        cursor: pointer;
+      }
+      .autocomplete-item:hover,
+      .autocomplete-item.active {
+        background-color: #007bff;
+        color: white;
+      }
+      /* Letakkan container autocomplete tepat di bawah input */
+      #search-container {
+        position: relative;
+      }
+      .leaflet-popup-content img {
+        max-width: 250px; /* maksimal lebar */
+        max-height: 150px; /* maksimal tinggi */
+        width: 100%; /* lebar penuh container popup */
+        height: auto; /* tinggi proporsional */
+        display: block;
+        margin-top: 8px;
+        border-radius: 6px;
+        object-fit: cover;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid px-4">
+        <a class="navbar-brand" href="#">Peta Wisata Kupang</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item"><a class="nav-link" href="index.html">Beranda</a></li>
+            <li class="nav-item"><a class="nav-link" href="data-wisata.html">Data Wisata</a></li>
+            <li class="nav-item"><a class="nav-link active" aria-current="page" href="peta.html">Peta</a></li>
+            <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Search bar with autocomplete container -->
+    <div class="bg-light py-3 px-3 shadow-sm">
+      <div class="container">
+        <div class="row g-2 align-items-center" id="search-container">
+          <div class="col-md-10 col-sm-12 position-relative">
+            <input type="text" id="globalSearch" class="form-control" placeholder="Temukan alamat atau tempat" autocomplete="off" />
+            <div id="autocomplete-list" class="autocomplete-list" style="display: none"></div>
+          </div>
+          <div class="col-md-2 col-sm-12">
+            <button id="searchButton" class="btn btn-success w-100" disabled>Cari</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Peta -->
+    <div id="map"></div>
+
+    <!-- JS Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/leaflet.js"></script>
+    <script src="js/leaflet-search.min.js"></script>
+
+    <script>
+      // Load marker icon lokal
+      delete L.Icon.Default.prototype._getIconUrl;
+      L.Icon.Default.mergeOptions({
+        iconRetinaUrl: "img/marker-icon-2x.png",
+        iconUrl: "img/marker-icon.png",
+        shadowUrl: "img/marker-shadow.png",
+      });
+
+      var map = L.map("map").setView([-10.1772, 123.607], 13);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "&copy; OpenStreetMap contributors",
+      }).addTo(map);
+
+      var markers = [
+        { name: "Pantai Lasiana", coords: [-10.130998674091183, 123.67047949936193], info: "Tempat wisata populer.", img: "img/lasiana.jpg" },
+        { name: "Gua Monyet", coords: [-10.148074572286857, 123.6131017294431], info: "Wisata alam dan religi.", img: "img/monyet.jpg" },
+        { name: "Batu Nona Beach", coords: [-10.133315299033942, 123.6608766058927], info: "Tempat wisata alam.", img: "img/batunona.jpg" },
+        { name: "Pantai Manikin", coords: [-10.124995355031986, 123.67400397890674], info: "Tempat wisata alam.", img: "img/manikin.jpg" },
+        { name: "Pantai Tablolong", coords: [-10.317886686733058, 123.475176178821], info: "Tempat wisata alam.", img: "img/tablolo.webp" },
+        { name: "Air Terjun Oenesu", coords: [-10.265861733660183, 123.56618549425217], info: "Tempat wisata alam.", img: "img/air-terjun.jpg" },
+        { name: "Gua Kristal", coords: [-10.224322790653583, 123.5105115918874], info: "Tempat wisata alam.", img: "img/kristal.jpg" },
+        { name: "Subasuka WaterPark", coords: [-10.148871331704648, 123.60674016356441], info: "Tempat wisata buatan.", img: "img/subasuka.webp" },
+        { name: "Bukit Cinta", coords: [-10.160020151052857, 123.66458563746433], info: "Tempat wisata populer.", img: "img/bcinta.jpg" },
+        { name: "Gunung Fatule'u", coords: [-9.949798678026392, 123.86134117827028], info: "Tempat wisata alam.", img: "img/fatuleu.jpg" },
+        { name: "Taman Nostalgia", coords: [-10.159086795623251, 123.61530732123605], info: "Tempat wisata buatan.", img: "img/tamnos.jpg" },
+        { name: "Kuah Asam Ikan Tenau", coords: [-10.189980455486536, 123.52844324822225], info: "Tempat wisata kuliner.", img: "img/artis.jpg" },
+        { name: "Kafe Tebing", coords: [-10.20296564731988, 123.53124064027962], info: "Tempat wisata kuliner.", img: "img/tebing.jpg" },
+        { name: "Bendungan Tilong", coords: [-10.17061524533008, 123.74547949609996], info: "Tempat wisata buatan.", img: "img/tilong.jpg" },
+        { name: "Bendungan Raknamo", coords: [-10.119192981924623, 123.9317992538553], info: "Tempat wisata buatan.", img: "img/raknamo.jpg" },
+      ];
+
+      var markerLayer = L.layerGroup().addTo(map);
+
+      markers.forEach((data) => {
+        var popupContent = `
+          <div class="popup-container">
+            <strong>${data.name}</strong><br>
+            ${data.info}<br>
+            <img src="${data.img}" alt="${data.name}" />
+          </div>
+        `;
+        var marker = L.marker(data.coords).bindPopup(popupContent);
+        marker.feature = { properties: { name: data.name } }; // untuk Leaflet Search
+        markerLayer.addLayer(marker);
+      });
+
+      // Buat instance Search Control tapi TIDAK ditambahkan ke map agar tidak muncul
+      var searchControl = new L.Control.Search({
+        layer: markerLayer,
+        propertyName: "name",
+        initial: false,
+        zoom: 16,
+        autoType: true,
+        autoCollapse: false,
+      });
+
+      // Referensi ke elemen input dan autocomplete container
+      const input = document.getElementById("globalSearch");
+      const btnSearch = document.getElementById("searchButton");
+      const autocompleteList = document.getElementById("autocomplete-list");
+
+      btnSearch.disabled = false;
+
+      // Fungsi untuk menampilkan daftar autocomplete
+      function showAutocomplete(results) {
+        autocompleteList.innerHTML = "";
+        if (results.length === 0) {
+          autocompleteList.style.display = "none";
+          return;
+        }
+
+        results.forEach((result, idx) => {
+          const item = document.createElement("div");
+          item.className = "autocomplete-item";
+          item.textContent = result.text;
+          item.dataset.lat = result.latlng.lat;
+          item.dataset.lng = result.latlng.lng;
+
+          item.addEventListener("click", () => {
+            // Set input text ke item yang dipilih
+            input.value = result.text;
+            // Zoom ke lokasi dan buka popup marker
+            map.setView(result.latlng, searchControl.options.zoom);
+            markerLayer.eachLayer(function (layer) {
+              if (layer.feature && layer.feature.properties.name === result.text) {
+                layer.openPopup();
+              }
+            });
+            autocompleteList.style.display = "none";
+          });
+
+          autocompleteList.appendChild(item);
+        });
+        autocompleteList.style.display = "block";
+      }
+
+      // Fungsi untuk cari dan autocomplete hasil dari searchControl
+      function performSearch(text) {
+        if (!text || text.length < 1) {
+          autocompleteList.style.display = "none";
+          return;
+        }
+        // Search hasil dari searchControl (internal method _filterData)
+        // Namun leaflet-search tidak expose method filter secara publik,
+        // jadi kita harus gunakan data dari layer sendiri untuk filter manual:
+
+        let results = [];
+        const lowerText = text.toLowerCase();
+
+        markerLayer.eachLayer((layer) => {
+          const name = layer.feature.properties.name;
+          if (name.toLowerCase().includes(lowerText)) {
+            results.push({ text: name, latlng: layer.getLatLng() });
+          }
+        });
+
+        showAutocomplete(results);
+      }
+
+      // Event listener input untuk autocomplete saat ketik
+      input.addEventListener("input", () => {
+        performSearch(input.value);
+      });
+
+      // Event listener tombol cari
+      btnSearch.addEventListener("click", () => {
+        const searchText = input.value;
+        if (!searchText) return;
+
+        // Cek apakah hasil cocok, jika cocok zoom ke lokasi dan buka popup
+        let found = false;
+        markerLayer.eachLayer((layer) => {
+          if (layer.feature.properties.name.toLowerCase() === searchText.toLowerCase()) {
+            map.setView(layer.getLatLng(), searchControl.options.zoom);
+            layer.openPopup();
+            found = true;
+          }
+        });
+        if (!found) alert("Tempat tidak ditemukan.");
+        autocompleteList.style.display = "none";
+      });
+
+      // Event enter key di input pencarian
+      input.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          btnSearch.click();
+        }
+      });
+
+      // Klik di luar autocomplete untuk tutup daftar autocomplete
+      document.addEventListener("click", (e) => {
+        if (!document.getElementById("search-container").contains(e.target)) {
+          autocompleteList.style.display = "none";
+        }
+      });
+    </script>
+  </body>
+</html>
