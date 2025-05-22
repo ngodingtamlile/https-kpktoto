@@ -100,7 +100,7 @@
     <script src="js/leaflet-search.min.js"></script>
 
     <script>
-      // Load marker icon lokal
+      // Setup marker icon lokal
       delete L.Icon.Default.prototype._getIconUrl;
       L.Icon.Default.mergeOptions({
         iconRetinaUrl: "img/marker-icon-2x.png",
@@ -108,12 +108,15 @@
         shadowUrl: "img/marker-shadow.png",
       });
 
+      // Inisialisasi peta dengan view default di Kupang
       var map = L.map("map").setView([-10.1772, 123.607], 13);
 
+      // Tambahkan tile layer OpenStreetMap
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: "&copy; OpenStreetMap contributors",
       }).addTo(map);
 
+      // Data marker wisata
       var markers = [
         { name: "Pantai Lasiana", coords: [-10.130998674091183, 123.67047949936193], info: "Tempat wisata populer.", img: "img/lasiana.jpg" },
         { name: "Gua Monyet", coords: [-10.148074572286857, 123.6131017294431], info: "Wisata alam dan religi.", img: "img/monyet.jpg" },
@@ -132,8 +135,10 @@
         { name: "Bendungan Raknamo", coords: [-10.119192981924623, 123.9317992538553], info: "Tempat wisata buatan.", img: "img/raknamo.jpg" },
       ];
 
+      // Layer group untuk marker
       var markerLayer = L.layerGroup().addTo(map);
 
+      // Tambah marker ke peta
       markers.forEach((data) => {
         var popupContent = `
           <div class="popup-container">
@@ -143,11 +148,12 @@
           </div>
         `;
         var marker = L.marker(data.coords).bindPopup(popupContent);
-        marker.feature = { properties: { name: data.name } }; // untuk Leaflet Search
+        // Untuk Leaflet Search (property pencarian)
+        marker.feature = { properties: { name: data.name } };
         markerLayer.addLayer(marker);
       });
 
-      // Buat instance Search Control tapi TIDAK ditambahkan ke map agar tidak muncul
+      // Buat instance Search Control (tidak ditampilkan, hanya dipakai internal)
       var searchControl = new L.Control.Search({
         layer: markerLayer,
         propertyName: "name",
@@ -157,14 +163,14 @@
         autoCollapse: false,
       });
 
-      // Referensi ke elemen input dan autocomplete container
+      // Elemen input dan tombol
       const input = document.getElementById("globalSearch");
       const btnSearch = document.getElementById("searchButton");
       const autocompleteList = document.getElementById("autocomplete-list");
 
       btnSearch.disabled = false;
 
-      // Fungsi untuk menampilkan daftar autocomplete
+      // Fungsi menampilkan autocomplete hasil pencarian
       function showAutocomplete(results) {
         autocompleteList.innerHTML = "";
         if (results.length === 0) {
@@ -180,9 +186,7 @@
           item.dataset.lng = result.latlng.lng;
 
           item.addEventListener("click", () => {
-            // Set input text ke item yang dipilih
             input.value = result.text;
-            // Zoom ke lokasi dan buka popup marker
             map.setView(result.latlng, searchControl.options.zoom);
             markerLayer.eachLayer(function (layer) {
               if (layer.feature && layer.feature.properties.name === result.text) {
@@ -197,15 +201,12 @@
         autocompleteList.style.display = "block";
       }
 
-      // Fungsi untuk cari dan autocomplete hasil dari searchControl
+      // Fungsi pencarian manual berdasarkan input text
       function performSearch(text) {
         if (!text || text.length < 1) {
           autocompleteList.style.display = "none";
           return;
         }
-        // Search hasil dari searchControl (internal method _filterData)
-        // Namun leaflet-search tidak expose method filter secara publik,
-        // jadi kita harus gunakan data dari layer sendiri untuk filter manual:
 
         let results = [];
         const lowerText = text.toLowerCase();
@@ -220,17 +221,16 @@
         showAutocomplete(results);
       }
 
-      // Event listener input untuk autocomplete saat ketik
+      // Event listener untuk input text search
       input.addEventListener("input", () => {
         performSearch(input.value);
       });
 
       // Event listener tombol cari
       btnSearch.addEventListener("click", () => {
-        const searchText = input.value;
+        const searchText = input.value.trim();
         if (!searchText) return;
 
-        // Cek apakah hasil cocok, jika cocok zoom ke lokasi dan buka popup
         let found = false;
         markerLayer.eachLayer((layer) => {
           if (layer.feature.properties.name.toLowerCase() === searchText.toLowerCase()) {
@@ -239,20 +239,15 @@
             found = true;
           }
         });
-        if (!found) alert("Tempat tidak ditemukan.");
+
+        if (!found) {
+          alert("Tempat tidak ditemukan.");
+        }
         autocompleteList.style.display = "none";
       });
 
-      // Event enter key di input pencarian
-      input.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          btnSearch.click();
-        }
-      });
-
-      // Klik di luar autocomplete untuk tutup daftar autocomplete
-      document.addEventListener("click", (e) => {
+      // Klik di luar autocomplete untuk menutup daftar
+      document.addEventListener("click", function (e) {
         if (!document.getElementById("search-container").contains(e.target)) {
           autocompleteList.style.display = "none";
         }
